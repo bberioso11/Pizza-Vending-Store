@@ -29,6 +29,39 @@ class Auth extends Database {
       connection.end();
     }
   }
+
+  async signup(form) {
+    const { firstname, lastname, email, password } = form;
+    const connection = await this.dbconnect();
+    try {
+      const checkEmail = await connection.execute(
+        `SELECT email FROM accounts WHERE email = ?`,
+        [email]
+      );
+      if (checkEmail[0].length != 0) {
+        return {
+          isSuccess: false,
+          message: "Email is already registered",
+        };
+      }
+      const insertData = await connection.execute(
+        `INSERT INTO accounts (firstname, lastname, email, password) VALUES (?, ?, ?, ?)`,
+        [firstname, lastname, email, password]
+      );
+      return {
+        isSuccess: true,
+        message: "Successfully created account",
+      };
+    } catch (err) {
+      console.log(err);
+      return {
+        isSuccess: false,
+        message: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
 }
 
 module.exports = Auth;

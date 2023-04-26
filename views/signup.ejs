@@ -10,6 +10,7 @@
     <link href="./layouts/modern-light-menu/css/light/loader.css" rel="stylesheet" type="text/css" />
     <link href="./layouts/modern-light-menu/css/dark/loader.css" rel="stylesheet" type="text/css" />
     <script src="./layouts/modern-light-menu/loader.js"></script>
+    
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
     <link href="./src/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -23,7 +24,6 @@
     <link rel="stylesheet" href="../src/plugins/src/sweetalerts2/sweetalerts2.css">
     <link href="./src/plugins/css/light/sweetalerts2/custom-sweetalert.css" rel="stylesheet" type="text/css" />
     <link href="./src/plugins/css/dark/sweetalerts2/custom-sweetalert.css" rel="stylesheet" type="text/css" />
-
     
 </head>
 <body class="form">
@@ -43,56 +43,66 @@
                 <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-8 col-12 d-flex flex-column align-self-center mx-auto">
                     <div class="card mt-3 mb-3">
                         <div class="card-body">
+    
                             <div class="row">
                                 <div class="col-md-12 mb-3">
                                     
-                                    <h2>Sign In</h2>
-                                    <p>Enter your email and password to login</p>
+                                    <h2>Sign Up</h2>
+                                    <p>Enter your email and password to register</p>
                                     
                                 </div>
-                                <form id="loginForm">
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label for="email" class="form-label">Email</label>
-                                            <input type="email" class="form-control" name="email" id="email" required>
-                                            <div class="invalid-feedback">
-                                                Invalid Email!
-                                            </div>
+                                <form id="signupForm" novalidate>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="firstname" class="form-label">Firstname</label>
+                                        <input type="text" class="form-control" name="firstname" id="firstname" required>
+                                        <div class="invalid-feedback">
+                                            Please fill out this field
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <div class="mb-4">
-                                            <label for="password" class="form-label">Password</label>
-                                            <input type="password" class="form-control" name="password" id="password" required>
-                                            <div class="invalid-feedback">
-                                                Password required!
-                                            </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="lastname" class="form-label">Lastname</label>
+                                        <input type="text" class="form-control" name="lastname" id="lastname" required>
+                                        <div class="invalid-feedback">
+                                            Please fill out this field
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <div class="mb-3">
-                                            <div class="form-check form-check-primary form-check-inline">
-                                                <input class="form-check-input me-3" type="checkbox" id="form-check-default">
-                                                <label class="form-check-label" for="form-check-default">
-                                                    Remember me
-                                                </label>
-                                            </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="email"class="form-label">Email</label>
+                                        <input type="email" class="form-control" name="email" id="email" required>
+                                        <div class="invalid-feedback">
+                                            Please provide a valid email
                                         </div>
                                     </div>
-                                    
-                                    <div class="col-12">
-                                        <div class="mb-4">
-                                            <button type="submit" class="btn btn-secondary w-100" id="signIn">SIGN IN</button>
+                                </div>
+                                <div class="col-12">
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Password</label>
+                                        <input type="password" class="form-control" name="password" id="password" required>
+                                        <div class="invalid-feedback">
+                                            Please fill out this field
                                         </div>
                                     </div>
-                                </form>                        
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="mb-4">
+                                        <button type="submit" class="btn btn-secondary w-100">SIGN UP</button>
+                                    </div>
+                                </div>
+                                </form>
                                 <div class="col-12">
                                     <div class="text-center">
-                                        <p class="mb-0">Dont't have an account ? <a href="/signup   " class="text-warning">Sign Up</a></p>
+                                        <p class="mb-0">Already have an account ? <a href="/login" class="text-warning">Sign in</a></p>
                                     </div>
                                 </div>
                                 
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -105,10 +115,9 @@
     
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
     <script src="./src/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- END GLOBAL MANDATORY SCRIPTS -->
     <script src="./src/plugins/src/sweetalerts2/sweetalerts2.min.js"></script>
-    <script src="/js/auth/login.js"></script>
-
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+    <script src="/js/auth/signup.js"></script>
 
 </body>
 </html>

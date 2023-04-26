@@ -3,11 +3,11 @@ const Auth = require("../models/auth");
 
 const auth = new Auth();
 
-const loginCtrl = async (req, res) => {
+exports.loginCtrl = async (req, res) => {
   res.render("login");
 };
 
-const loginAuth = async (req, res) => {
+exports.loginAuth = async (req, res) => {
   const login = await auth.login(req.body);
   if (login.isSuccess) {
     const token = jwt.sign({ userID: 1 }, process.env.JWT_KEY, {
@@ -22,9 +22,16 @@ const loginAuth = async (req, res) => {
   res.json(login);
 };
 
-const logoutCtrl = (req, res) => {
+exports.logoutCtrl = (req, res) => {
   res.clearCookie("auth_token");
   res.redirect("/");
 };
 
-module.exports = { loginCtrl, loginAuth, logoutCtrl };
+exports.signupCtrl = (req, res) => {
+  res.render("signup");
+};
+
+exports.signupAuth = async (req, res) => {
+  const signup = await auth.signup(req.body);
+  res.json(signup);
+};
