@@ -1,0 +1,18 @@
+const dotenv = require("dotenv").config();
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const authRoutes = require("./routes/auth");
+const indexRoutes = require("./routes/index");
+const app = express();
+
+app.listen(3000);
+
+app.set("view engine", "ejs");
+
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(cookieParser());
+
+app.use("/", indexRoutes);
+app.use("/", authRoutes);
