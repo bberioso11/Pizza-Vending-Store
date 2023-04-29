@@ -12,6 +12,47 @@ class Products extends Database {
       connection.end();
     }
   }
+
+  async viewProduct(id) {
+    const connection = await this.dbconnect();
+    try {
+      const [product] = await connection.execute(
+        `SELECT * FROM products WHERE id = ?`,
+        [id]
+      );
+      return product[0];
+    } catch (err) {
+      console.log(err);
+    } finally {
+      connection.end();
+    }
+  }
+
+  async saveProduct(form) {
+    const connection = await this.dbconnect();
+    const productName = form.productName;
+    const productID = form.productID;
+    const productPrice = form.productPrice;
+    const productQuantity = form.productQuantity;
+
+    try {
+      await connection.execute(
+        `UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?`,
+        [productName, productPrice, productQuantity, productID]
+      );
+      return {
+        isSuccess: true,
+        message: "Successfully updated",
+      };
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
 }
 
 module.exports = Products;

@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const authMiddleware = require("./middlewares/authMiddleware");
 const authRoutes = require("./routes/auth");
 const indexRoutes = require("./routes/index");
+const adminRoutes = require("./routes/admin");
 const app = express();
 
 app.listen(3000);
@@ -18,3 +19,4 @@ app.use(authMiddleware.verifyJWT);
 
 app.use("/", indexRoutes);
 app.use("/", authRoutes);
+app.use("/admin", adminRoutes);
