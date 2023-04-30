@@ -5,7 +5,7 @@ class Userdata extends Database {
     const connection = await this.dbconnect();
     try {
       const [userData] = await connection.execute(
-        `SELECT id, email, firstname, lastname, password FROM accounts WHERE id = ?`,
+        `SELECT id, email, firstname, lastname, password, position FROM accounts WHERE id = ?`,
         [userID]
       );
       return userData[0];
