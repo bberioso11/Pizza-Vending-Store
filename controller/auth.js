@@ -10,7 +10,7 @@ exports.loginCtrl = async (req, res) => {
 exports.loginAuth = async (req, res) => {
   const login = await auth.login(req.body);
   if (login.isSuccess) {
-    const token = jwt.sign({ userID: 1 }, process.env.JWT_KEY, {
+    const token = jwt.sign({ userID: login.userID }, process.env.JWT_KEY, {
       expiresIn: "7d",
     });
     res.cookie("auth_token", token, {
