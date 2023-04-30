@@ -2,6 +2,7 @@ const dotenv = require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const authMiddleware = require("./middlewares/authMiddleware");
+const userdataMiddleware = require("./middlewares/userdataMiddleware");
 const authRoutes = require("./routes/auth");
 const indexRoutes = require("./routes/index");
 const adminRoutes = require("./routes/admin");
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(authMiddleware.verifyJWT);
+app.use(userdataMiddleware.userData);
 
 app.use("/", indexRoutes);
 app.use("/", authRoutes);
