@@ -5,6 +5,7 @@ const authMiddleware = require("./middlewares/authMiddleware");
 const authRoutes = require("./routes/auth");
 const indexRoutes = require("./routes/index");
 const adminRoutes = require("./routes/admin");
+const productRoutes = require("./routes/product");
 const app = express();
 
 app.listen(3000);
@@ -19,4 +20,5 @@ app.use(authMiddleware.verifyJWT);
 
 app.use("/", indexRoutes);
 app.use("/", authRoutes);
+app.use("/", productRoutes);
 app.use("/admin", adminRoutes);

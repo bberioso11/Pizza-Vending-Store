@@ -15,3 +15,9 @@ exports.saveProduct = async (req, res) => {
   const response = await products.saveProduct(req.body);
   res.json(response);
 };
+
+exports.productRender = async (req, res) => {
+  const product = await products.productDetails(req.params.id);
+
+  res.render("product", { product });
+};

@@ -53,6 +53,25 @@ class Products extends Database {
       connection.end();
     }
   }
+
+  async productDetails(id) {
+    const connection = await this.dbconnect();
+    try {
+      const [details] = await connection.execute(
+        `SELECT * FROM products WHERE id = ?`,
+        [id]
+      );
+      return details[0];
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something wrong",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
 }
 
 module.exports = Products;
