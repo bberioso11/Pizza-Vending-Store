@@ -112,35 +112,45 @@ const initDeleteMulti = () => {
   const btnDelete = document.querySelector(".btn-delete-multi");
 
   btnDelete.addEventListener("click", () => {
-    Swal.fire({
-      title: `Are you sure you want to delete those selected accounts?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const chkBoxes = document.querySelectorAll(".child-chk:checked");
-        let userIDs = [];
-        chkBoxes.forEach((chkBox) => {
-          userIDs.push(chkBox.value);
-        });
-        const response = await deleteAccount(userIDs);
-        if (response.isSuccess) {
-          Toast.fire({
-            icon: "success",
-            title: response.message,
+    const childsChk = document.querySelectorAll(
+      "tbody [type='checkbox']:checked"
+    );
+    if (childsChk.length === 0) {
+      Toast.fire({
+        icon: "error",
+        title: "Please select at least one checkbox",
+      });
+    } else {
+      Swal.fire({
+        title: `Are you sure you want to delete those selected accounts?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const chkBoxes = document.querySelectorAll(".child-chk:checked");
+          let userIDs = [];
+          chkBoxes.forEach((chkBox) => {
+            userIDs.push(chkBox.value);
           });
-          dt.ajax.reload(null, false);
-        } else {
-          Toast.fire({
-            icon: "error",
-            title: response.message,
-          });
+          const response = await deleteAccount(userIDs);
+          if (response.isSuccess) {
+            Toast.fire({
+              icon: "success",
+              title: response.message,
+            });
+            dt.ajax.reload(null, false);
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: response.message,
+            });
+          }
         }
-      }
-    });
+      });
+    }
   });
 };
 
