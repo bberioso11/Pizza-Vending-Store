@@ -3,6 +3,7 @@ const multer = require("multer");
 const adminCtrl = require("../controller/admin");
 const productCtrl = require("../controller/products");
 const customersCtrl = require("../controller/customers");
+const transactionsCtrl = require("../controller/transactions");
 const userdataMiddleware = require("../middlewares/userdataMiddleware");
 
 const router = express.Router();
@@ -21,5 +22,13 @@ router.get("/api/accountdetails/:userID", customersCtrl.accountDetails);
 router.delete("/api/accountdelete", customersCtrl.accountDelete);
 router.post("/api/account-save", upload.none(), customersCtrl.accountSave);
 router.get("/customers", customersCtrl.customersRender);
+
+// Transactions
+router.get(
+  "/api/transactions-table/:status",
+  transactionsCtrl.transactionTable
+);
+router.delete("/api/transactions-delete", transactionsCtrl.transactionDelete);
+router.get("/transactions/:status", transactionsCtrl.transactionRender);
 
 module.exports = router;
