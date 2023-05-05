@@ -138,6 +138,28 @@ class Products extends Database {
     }
   }
 
+  async removeCart(userID, productID) {
+    const connection = await this.dbconnect();
+    try {
+      await connection.execute(
+        `DELETE FROM cart WHERE customer_id = ? AND product_id = ?`,
+        [userID, productID]
+      );
+      return {
+        isSuccess: true,
+        message: "Successfully deleted.",
+      };
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something wrong.",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
   async myCart(userID) {
     const connection = await this.dbconnect();
     try {

@@ -30,3 +30,20 @@ exports.updateCart = async (req, res) => {
     res.json(response);
   }
 };
+
+exports.removeCart = async (req, res) => {
+  const userID = res.locals.userID;
+  const productID = req.body.productID;
+  if (!userID) {
+    res.sendStatus(401);
+  } else {
+    const response = await products.removeCart(userID, productID);
+    res.json(response);
+  }
+};
+
+exports.myCart = async (req, res) => {
+  const userID = res.locals.userID;
+  const myCarts = await products.myCart(userID);
+  res.json(myCarts);
+};

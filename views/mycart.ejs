@@ -80,23 +80,10 @@
                                                     <th class="fw-semibold" style="width: 200px; min-width: 200px">Quantity</th>
                                                     <th class="fw-semibold">Price</th>
                                                     <th class="fw-semibold">Amount</th>
+                                                    <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <% myCarts.forEach((myCart) => { %>
-                                                        <tr>
-                                                            <td>
-                                                                <img src="/product-images/<%= myCart.product_img %>" alt="<%= myCart.product_name %>" style="width: 100px;">
-                                                                <span class="fw-semibold"><%= myCart.product_name %></span>
-                                                                <input type="hidden" class="productID" value="<%= myCart.product_id %>">
-                                                            </td>
-                                                            <td class="fw-semibold">
-                                                                <input class="quantity" type="text" value="<%= myCart.quantity %>" name="quantity">
-                                                            </td>
-                                                            <td class="fw-semibold">₱<%= myCart.product_price %></td>
-                                                            <td class="fw-semibold">₱<%= myCart.product_price * myCart.quantity %></td>
-                                                        </tr>
-                                                    <% }) %>
                                                     
                                                 </tbody>
                                             </table>

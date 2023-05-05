@@ -18,12 +18,9 @@ $("input[name='quantity']").TouchSpin({
   buttonup_class: "btn btn-secondary",
 });
 
-const addtocart = document.querySelector("#addtocart");
+const buttons = document.querySelectorAll("#addtocart, #buynow");
 
-addtocart.addEventListener("click", async () => {
-  const productID = document.querySelector("#productID").value;
-  const quantity = document.querySelector("#quantity").value;
-
+const addCart = async (productID, quantity) => {
   const api = await fetch("/api/addtocart", {
     method: "POST",
     headers: {
@@ -36,15 +33,24 @@ addtocart.addEventListener("click", async () => {
   });
 
   const response = await api.json();
-  if (response.isSuccess) {
-    Toast.fire({
-      icon: "success",
-      title: response.message,
-    });
-  } else {
-    Toast.fire({
-      icon: "error",
-      title: response.message,
-    });
-  }
+  return response;
+};
+
+buttons.forEach((button) => {
+  button.addEventListener("click", async () => {
+    const productID = document.querySelector("#productID").value;
+    const quantity = document.querySelector("#quantity").value;
+    const cart = await addCart(productID, quantity);
+    if (cart.isSuccess) {
+      Toast.fire({
+        icon: "success",
+        title: cart.message,
+      });
+    } else {
+      Toast.fire({
+        icon: "error",
+        title: cart.message,
+      });
+    }
+  });
 });
