@@ -8,6 +8,7 @@ const indexRoutes = require("./routes/index");
 const adminRoutes = require("./routes/admin");
 const productRoutes = require("./routes/product");
 const mycartRoutes = require("./routes/mycart");
+const checkoutRoutes = require("./routes/checkout");
 const app = express();
 
 app.listen(3000);
@@ -25,4 +26,5 @@ app.use("/", indexRoutes);
 app.use("/", authRoutes);
 app.use("/", productRoutes);
 app.use("/", mycartRoutes);
+app.use("/", checkoutRoutes);
 app.use("/admin", adminRoutes);

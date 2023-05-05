@@ -91,7 +91,11 @@
                                                                 <input type="hidden" class="productID" value="<%= myCart.product_id %>">
                                                             </td>
                                                             <td class="fw-semibold">
-                                                                <input class="quantity" type="text" value="<%= myCart.quantity %>" name="quantity">
+                                                                <% if(myCart.quantity !== 1){%>
+                                                                    <span class="quantity"><%= myCart.quantity %>pcs</span>
+                                                                <%} else{ %>
+                                                                    <span class="quantity"><%= myCart.quantity %>pc</span>
+                                                                <% }%>
                                                             </td>
                                                             <td class="fw-semibold">₱<%= myCart.product_price %></td>
                                                             <td class="fw-semibold">₱<%= myCart.product_price * myCart.quantity %></td>
@@ -103,9 +107,29 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 align-self-center text-center">
+                                <div class="col-lg-3">
                                     <div class="container">
-                                        <a href="/checkout" class="btn btn-success">Proceed to Checkout</a>
+                                        <div class="card">
+                                            <div class="card-body">
+                                              <h6 class="card-title">Select Payment</h6>
+                                              <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="payment-method" id="gcash">
+                                                        <label class="form-check-label" for="gcash">GCash</label>
+                                                      </div>
+                                                      <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="payment-method" id="paymaya">
+                                                        <label class="form-check-label" for="paymaya">Paymaya</label>
+                                                      </div>
+                                                      <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="payment-method" id="paypal">
+                                                        <label class="form-check-label" for="paypal">Paypal</label>
+                                                      </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +162,7 @@
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     <script src="./src/plugins/src/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
-    <script src="/js/mycart.js"></script>
+    <script src="/js/checkout.js"></script>
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 </body>
 </html>
