@@ -20,13 +20,15 @@
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="../src/plugins/src/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css">
     <link rel="stylesheet" type="text/css" href="../src/plugins/src/glightbox/glightbox.min.css">
-    <link rel="stylesheet" type="text/css" href="../src/plugins/src/splide/splide.min.css">
 
     <link rel="stylesheet" type="text/css" href="../src/assets/css/light/components/tabs.css">
     <link rel="stylesheet" type="text/css" href="../src/assets/css/light/apps/ecommerce-details.css">
     
     <link rel="stylesheet" type="text/css" href="../src/assets/css/dark/components/tabs.css">
     <link rel="stylesheet" type="text/css" href="../src/assets/css/dark/apps/ecommerce-details.css">
+    <link rel="stylesheet" href="../src/plugins/src/sweetalerts2/sweetalerts2.css">
+     <link href="../src/plugins/css/light/sweetalerts2/custom-sweetalert.css" rel="stylesheet" type="text/css" />
+     <link href="../src/plugins/css/dark/sweetalerts2/custom-sweetalert.css" rel="stylesheet" type="text/css" />
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 
     <style>
@@ -87,7 +89,7 @@
                                         <div class="product-details-content">
                                             
                                             <h3 class="product-title mb-3"><%= product.name %></h3>
-    
+                                            <input type="hidden" name="productID" id="productID" value="<%= product.id %>">
                                             <div class="row">
 
                                                 <div class="col-md-9 col-sm-9 col-9">
@@ -107,7 +109,7 @@
                                             <div class="row quantity-selector mb-4">
                                                 <div class="col-xl-6 col-lg-6 col-sm-6 mt-sm-3">Quantity</div>
                                                 <div class="col-xl-6 col-lg-6 col-sm-6">
-                                                    <input id="demo1" type="text" value="1" name="demo1">
+                                                    <input id="quantity" type="text" value="1" name="quantity">
                                                 </div>
                                             </div>
 
@@ -118,7 +120,12 @@
                                                 <div class="row">
 
                                                     <div class="col-xxl-7 col-xl-7 col-sm-6 mb-sm-0 mb-3">
-                                                        <button class="btn btn-primary w-100 btn-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <span class="btn-text-inner">Add To Cart</span></button>
+                                                        
+                                                        <% if(!userID){%>
+                                                            <a class="btn btn-primary w-100 btn-lg" href="/login"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <span class="btn-text-inner">Add To Cart</span></a>
+                                                        <% }else{%>
+                                                            <button class="btn btn-primary w-100 btn-lg" id="addtocart"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <span class="btn-text-inner">Add To Cart</span></button>
+                                                        <%} %>
                                                     </div>
 
                                                     <div class="col-xxl-5 col-xl-5 col-sm-6">
@@ -171,9 +178,8 @@
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     <script src="../src/plugins/src/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
-    <script src="../src/plugins/src/glightbox/glightbox.min.js"></script>
-    <script src="../src/plugins/src/splide/splide.min.js"></script>
-    <script src="../src/assets/js/apps/ecommerce-details.js"></script> 
+    <script src="../src/plugins/src/sweetalerts2/sweetalerts2.min.js"></script>
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <script src="/js/product.js"></script>
 </body>
 </html>

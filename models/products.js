@@ -72,6 +72,90 @@ class Products extends Database {
       connection.end();
     }
   }
+
+  async addtoCart(userID, productID, quantity) {
+    const productDetails = await this.productDetails(productID);
+    const totalPrice = quantity * productDetails.price;
+
+    const connection = await this.dbconnect();
+    try {
+      const [row] = await connection.execute(
+        `SELECT COUNT(*) as total FROM cart WHERE customer_id = ? AND product_id = ?`,
+        [userID, productID]
+      );
+      if (row[0].total === 0) {
+        await connection.execute(
+          `INSERT INTO cart (customer_id, product_id, quantity, total_price) VALUES (?, ?, ?, ?)`,
+          [userID, productID, quantity, totalPrice]
+        );
+        return {
+          isSuccess: true,
+          message: "Successfull added to cart",
+        };
+      } else {
+        await connection.execute(
+          `UPDATE cart SET quantity = quantity + ?, total_price = total_price + ? WHERE customer_id = ? AND product_id = ?`,
+          [quantity, totalPrice, userID, productID]
+        );
+        return {
+          isSuccess: true,
+          message: "Successfull updated the cart",
+        };
+      }
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something wrong",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
+  async updateCart(userID, productID, quantity) {
+    const productDetails = await this.productDetails(productID);
+    const totalPrice = quantity * productDetails.price;
+
+    const connection = await this.dbconnect();
+    try {
+      await connection.execute(
+        `UPDATE cart SET quantity = ?, total_price =  ? WHERE customer_id = ? AND product_id = ?`,
+        [quantity, totalPrice, userID, productID]
+      );
+      return {
+        isSuccess: true,
+        message: "Successfull updated the cart",
+      };
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something wrong",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
+  async myCart(userID) {
+    const connection = await this.dbconnect();
+    try {
+      const [myCart] = await connection.execute(
+        `SELECT cart.quantity, products.id AS product_id, products.name AS product_name, products.image AS product_img, products.price AS product_price FROM cart INNER JOIN products ON cart.product_id = products.id WHERE customer_id = ?`,
+        [userID]
+      );
+      return myCart;
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something wrong",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
 }
 
 module.exports = Products;

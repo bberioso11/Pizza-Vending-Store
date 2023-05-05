@@ -7,6 +7,7 @@ const authRoutes = require("./routes/auth");
 const indexRoutes = require("./routes/index");
 const adminRoutes = require("./routes/admin");
 const productRoutes = require("./routes/product");
+const mycartRoutes = require("./routes/mycart");
 const app = express();
 
 app.listen(3000);
@@ -23,4 +24,5 @@ app.use(userdataMiddleware.userData);
 app.use("/", indexRoutes);
 app.use("/", authRoutes);
 app.use("/", productRoutes);
+app.use("/", mycartRoutes);
 app.use("/admin", adminRoutes);
