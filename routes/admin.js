@@ -4,6 +4,7 @@ const adminCtrl = require("../controller/admin");
 const productCtrl = require("../controller/products");
 const customersCtrl = require("../controller/customers");
 const transactionsCtrl = require("../controller/transactions");
+const invoiceCtrl = require("../controller/invoice");
 const accountPermissionMiddleware = require("../middlewares/accountPermissionsMiddleware");
 
 const router = express.Router();
@@ -31,5 +32,8 @@ router.get(
 );
 router.delete("/api/transactions-delete", transactionsCtrl.transactionDelete);
 router.get("/transactions/:status", transactionsCtrl.transactionRender);
+
+// Invoice
+router.get("/invoice/:id", invoiceCtrl.invoiceRender);
 
 module.exports = router;

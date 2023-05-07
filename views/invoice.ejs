@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <title>Pizza Vendo </title>
+    <link rel="icon" type="image/x-icon" href="../../src/assets/img/pizzavendo-icon2.png"/>
+    <link href="../../layouts/modern-light-menu/css/light/loader.css" rel="stylesheet" type="text/css" />
+    <link href="../../layouts/modern-light-menu/css/dark/loader.css" rel="stylesheet" type="text/css" />
+    <script src="../../layouts/modern-light-menu/loader.js"></script>
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
+    <link href="../../src/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../layouts/modern-light-menu/css/light/plugins.css" rel="stylesheet" type="text/css" />
+    <link href="../../layouts/modern-light-menu/css/dark/plugins.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+    <link href="../../src/assets/css/light/apps/invoice-preview.css" rel="stylesheet" type="text/css" />
+    <link href="../../src/assets/css/dark/apps/invoice-preview.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+
+    <style>
+        body.dark .layout-px-spacing, .layout-px-spacing {
+            min-height: calc(100vh - 155px) !important;
+        }
+    </style>
+    
+</head>
+<body class="layout-boxed">
+
+    <!-- BEGIN LOADER -->
+    <div id="load_screen"> <div class="loader"> <div class="loader-content">
+        <div class="spinner-grow align-self-center"></div>
+    </div></div></div>
+    <!--  END LOADER -->
+
+    <%- include('partials/navbar')%>
+
+    <!--  BEGIN MAIN CONTAINER  -->
+    <div class="main-container " id="container">
+
+        <div class="overlay"></div>
+        <div class="search-overlay"></div>
+
+        <%- include('partials/sidebar')%>
+        
+        <!--  BEGIN CONTENT AREA  -->
+        <div id="content" class="main-content">
+            <div class="layout-px-spacing">
+
+                <div class="middle-content container-xxl p-0">
+                    
+                    <div class="row invoice layout-top-spacing layout-spacing">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            
+                            <div class="doc-container">
+    
+                                <div class="row">
+    
+                                    <div class="col-xl-12">
+    
+                                        <div class="invoice-container">
+                                            <div class="invoice-inbox">
+                                                
+                                                <div id="ct" class="">
+                                                    
+                                                    <div class="invoice-00001">
+                                                        <div class="content-section">
+        
+                                                            <div class="inv--head-section inv--detail-section">
+                                                            
+                                                                <div class="row">
+
+                                                                    <div class="col-sm-6 col-12 mr-auto">
+                                                                        <div class="d-flex">
+                                                                            <img class="company-logo" src="/src/assets/img/pizzavendo-icon1.png" alt="company">
+                                                                            <h3 class="in-heading align-self-center">Pizza Vendo</h3>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-sm-6 text-sm-end">
+                                                                        <p class="inv-list-number mt-sm-3 pb-sm-2 mt-4"><span class="inv-title">Invoice : </span> <span class="inv-number">#<%= invoice.transaction.id %></span></p>
+                                                                        <p class="inv-created-date mt-1"><span class="inv-title">Invoice Date : </span> <span class="inv-date"><%= invoice.transaction.purchased_date %></span></p>
+                                                                    </div>                                                                
+                                                                </div>
+                                                                
+                                                            </div>
+        
+                                                            <div class="inv--detail-section inv--customer-detail-section">
+    
+                                                                <div class="row">
+        
+                                                                    <div class="col-xl-8 col-lg-7 col-md-6 col-sm-4 align-self-center">
+                                                                        <p class="inv-to">Invoice To</p>
+                                                                    </div>
+    
+                                                                    <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 align-self-center order-sm-0 order-1 text-sm-end mt-sm-0 mt-5">
+                                                                        <h6 class=" inv-title">Invoice From</h6>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-xl-8 col-lg-7 col-md-6 col-sm-4">
+                                                                        <p class="inv-customer-name"><%= invoice.customer.firstname + ' ' + invoice.customer.lastname %></p>
+                                                                        <p class="inv-email-address"><%= invoice.customer.email %></p>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 col-12 order-sm-0 order-1 text-sm-end">
+                                                                        <p class="inv-customer-name">Pizza Vendo</p>
+                                                                        <p class="inv-email-address">ask@pizzavendo.store</p>
+                                                                    </div>
+    
+                                                                </div>
+                                                                
+                                                            </div>
+    
+                                                            <div class="inv--product-table-section">
+                                                                <div class="table-responsive">
+                                                                    <table class="table">
+                                                                        <thead class="">
+                                                                            <tr>
+                                                                                <th scope="col">Items</th>
+                                                                                <th class="text-end" scope="col">Qty</th>
+                                                                                <th class="text-end" scope="col">Price</th>
+                                                                                <th class="text-end" scope="col">Amount</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <% invoice.products.forEach((product) => {%>
+                                                                                <tr>
+                                                                                    <td><%= product.name %></td>
+                                                                                    <td class="text-end"><%= product.quantity %>
+                                                                                        <% if(product.quantity > 1) {%>
+                                                                                            pcs
+                                                                                        <% }else{%>
+                                                                                            pc
+                                                                                        <% }%>
+                                                                                    </td>
+                                                                                    <td class="text-end">₱<%= product.price %></td>
+                                                                                    <td class="text-end">₱<%= product.price * product.quantity%></td>
+                                                                                </tr>
+                                                                            <% }) %>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="inv--total-amounts">
+                                                            
+                                                                <div class="row">
+                                                                    <div class="col-sm-5 col-12 order-sm-0 order-1">
+                                                                        <img class="" src="/qrcodes/<%= invoice.transaction.uuidv4 %>.png" alt="qr">
+                                                                        <p class="ps-2">Scan to Claim Pizza</p>
+                                                                    </div>
+                                                                    <div class="col-sm-7 col-12 order-sm-1 order-0">
+                                                                        <div class="text-sm-end">
+                                                                            <div class="row">
+                                                                                <div class="col-sm-8 col-7 mt-3 m">
+                                                                                    <h6 class="">Grand Total : </h6>
+                                                                                </div>
+                                                                                <div class="col-sm-4 col-5 mt-3">
+                                                                                    <h6 class="">$3480</h6>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+    
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+                                                    
+                                                </div>
+        
+        
+                                            </div>
+        
+                                        </div>
+    
+                                    </div>
+    
+                                </div>
+                                
+                            </div>
+    
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <%- include('partials/footer')%>
+            
+        </div>
+        <!--  END CONTENT AREA  -->
+    </div>
+    <!-- END MAIN CONTAINER -->
+
+    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+    <script src="../../src/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../src/plugins/src/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../src/plugins/src/mousetrap/mousetrap.min.js"></script>
+    <script src="../../src/plugins/src/waves/waves.min.js"></script>
+    <script src="../../layouts/modern-light-menu/app.js"></script>
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+</body>
+</html>

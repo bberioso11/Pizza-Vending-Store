@@ -89,6 +89,76 @@ class Transactions extends Database {
       connection.end();
     }
   }
+
+  async invoice(transactionID) {
+    const connection = await this.dbconnect();
+    try {
+      let productItems = [];
+
+      // Get Transaction Info
+      const [transaction] = await connection.execute(
+        `SELECT * FROM transactions WHERE id = ? `,
+        [transactionID]
+      );
+
+      // Get Sales
+      const [sales] = await connection.execute(
+        `SELECT * FROM sales WHERE transaction_id = ?`,
+        [transactionID]
+      );
+
+      const productsPromise = sales.map(async (sale) => {
+        try {
+          const [product] = await connection.execute(
+            `SELECT * FROM products WHERE id = ?`,
+            [sale.product_id]
+          );
+          return product[0];
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      const products = await Promise.all(productsPromise);
+      products.forEach((product) => {
+        productItems.push(product);
+      });
+
+      // Get Customer Info
+      const [customer] = await connection.execute(
+        `SELECT id, email, firstname, lastname FROM accounts WHERE id = ?`,
+        [transaction[0].customer_id]
+      );
+
+      const date = new Date(transaction[0].purchase_date);
+      const purchasedDate = date.toLocaleString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      });
+
+      return {
+        customer: customer[0],
+        transaction: {
+          id: transactionID,
+          uuidv4: transaction[0].uuidv4,
+          purchased_date: purchasedDate,
+        },
+        products: productItems,
+      };
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something wrong.",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
 }
 
 module.exports = Transactions;
