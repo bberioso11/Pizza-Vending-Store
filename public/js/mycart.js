@@ -11,15 +11,19 @@ const updateCart = async (productID, quantity) => {
   });
 };
 
-const table = async () => {
-  const tbody = document.querySelector("tbody");
-  let item = "";
-
+const myCart = async () => {
   const api = await fetch(`/api/mycart`, {
     method: "GET",
   });
-
   const carts = await api.json();
+  return carts;
+};
+
+const table = async () => {
+  const tbody = document.querySelector("tbody");
+  let item = "";
+  const carts = await myCart();
+
   carts.forEach((cart) => {
     const totalPrice = cart.product_price * cart.quantity;
     item += `
@@ -42,10 +46,7 @@ const table = async () => {
   });
 
   tbody.innerHTML = item;
-  touchspin();
-  removeCart();
 };
-table();
 
 const touchspin = () => {
   $("input[name='quantity']")
@@ -65,7 +66,7 @@ const touchspin = () => {
       const productID = parent.querySelectorAll("td .productID")[0].value;
       const quantity = parent.querySelectorAll("td div>.quantity")[0].value;
       await updateCart(productID, quantity);
-      table();
+      updateAmount();
     });
 };
 
@@ -86,7 +87,21 @@ const removeCart = () => {
         }),
       });
       const response = await api.json();
-      table();
     });
   });
 };
+
+const updateAmount = async () => {
+  const tableRows = document.querySelectorAll("tbody tr");
+  const carts = await myCart();
+  carts.forEach((cart, index) => {
+    const totalPrice = cart.product_price * cart.quantity;
+    tableRows[index].querySelectorAll("td")[3].innerText = `₱${totalPrice}`;
+  });
+};
+
+(async () => {
+  await table();
+  touchspin();
+  removeCart();
+})();

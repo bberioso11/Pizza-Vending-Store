@@ -16,7 +16,7 @@ exports.loginAuth = async (req, res) => {
     res.cookie("auth_token", token, {
       httpOnly: true,
       secure: true,
-      maxAge: 604800,
+      maxAge: 604800000,
     });
   }
   res.json(login);
