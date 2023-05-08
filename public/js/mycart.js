@@ -24,6 +24,11 @@ const table = async () => {
   let item = "";
   const carts = await myCart();
 
+  if (carts.length === 0) {
+    const btnCheckout = document.querySelector(".btn-checkout");
+    btnCheckout.classList.add("disabled");
+  }
+
   carts.forEach((cart) => {
     const totalPrice = cart.product_price * cart.quantity;
     item += `
@@ -75,6 +80,7 @@ const removeCart = () => {
   btnsRemove.forEach((btnRemove) => {
     btnRemove.addEventListener("click", async () => {
       const parent = btnRemove.closest("tr");
+      console.log("1");
       const productID = parent.querySelectorAll("td .productID")[0].value;
 
       const api = await fetch(`/api/removecart`, {
@@ -87,6 +93,7 @@ const removeCart = () => {
         }),
       });
       const response = await api.json();
+      initTable();
     });
   });
 };
@@ -100,8 +107,9 @@ const updateAmount = async () => {
   });
 };
 
-(async () => {
+const initTable = async () => {
   await table();
   touchspin();
   removeCart();
-})();
+};
+initTable();
