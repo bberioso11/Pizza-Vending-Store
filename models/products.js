@@ -178,6 +178,49 @@ class Products extends Database {
       connection.end();
     }
   }
+
+  async clearCart(userID) {
+    const connection = await this.dbconnect();
+    try {
+      await connection.execute(`DELETE FROM cart WHERE customer_id = ?`, [
+        userID,
+      ]);
+      return {
+        isSuccess: true,
+        message: "Clear Cart Successfully",
+      };
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something Wrong.",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
+  async updateQuantity(productID, quantity) {
+    const connection = await this.dbconnect();
+    try {
+      await connection.execute(
+        `UPDATE products SET quantity = quantity - ? WHERE id = ?`,
+        [quantity, productID]
+      );
+      return {
+        isSuccess: true,
+        message: "Update Product Quantity Successfully",
+      };
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something Wrong.",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
 }
 
 module.exports = Products;

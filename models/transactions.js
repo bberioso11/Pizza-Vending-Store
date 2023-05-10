@@ -1,4 +1,6 @@
 const Database = require("../config/database");
+const Products = require("./products");
+const products = new Products();
 
 class Transactions extends Database {
   async TransactionsTable(dt, status) {
@@ -148,6 +150,46 @@ class Transactions extends Database {
           purchased_date: purchasedDate,
         },
         products: productItems,
+      };
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something wrong.",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
+  async createTransaction(customerID) {
+    const connection = await this.dbconnect();
+    try {
+      // Get User Cart
+      const userCarts = await products.myCart(customerID);
+
+      // Insert Transaction
+      const [transaction] = await connection.execute(
+        `INSERT INTO transactions (status, customer_id, uuidv4) VALUES ('pending', ?, '')`,
+        [customerID]
+      );
+
+      // Create Sales
+      // Iterate User Cart
+      userCarts.forEach(async (cart) => {
+        await connection.execute(
+          `INSERT INTO sales (transaction_id, product_id, quantity, total_price) VALUES (?, ?, ?, ?)`,
+          [
+            transaction.insertId,
+            cart.product_id,
+            cart.quantity,
+            cart.quantity * cart.product_price,
+          ]
+        );
+      });
+      return {
+        isSuccess: true,
+        transactionID: transaction.insertId,
       };
     } catch (err) {
       return {
