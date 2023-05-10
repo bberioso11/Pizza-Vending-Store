@@ -3,7 +3,7 @@ const Products = require("./products");
 const products = new Products();
 
 class Transactions extends Database {
-  async TransactionsTable(dt, status) {
+  async adminTransactionsTable(dt, status) {
     const connection = await this.dbconnect();
     try {
       const draw = dt.draw;
@@ -32,6 +32,54 @@ class Transactions extends Database {
       const [data] = await connection.execute(
         `${query} GROUP BY sales.transaction_id ORDER BY ${orderColumn} ${orderDir} LIMIT ${start}, ${length}`,
         [status]
+      );
+      return {
+        draw: parseInt(draw),
+        recordsTotal: recordsTotal[0].total,
+        recordsFiltered: recordsFiltered.length,
+        data: data,
+      };
+    } catch (err) {
+      console.log(err);
+      return {
+        isSuccess: false,
+        message: "Something wrong",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
+  async customerTransactionsTable(dt, status, userID) {
+    const connection = await this.dbconnect();
+    try {
+      const draw = dt.draw;
+      const start = dt.start;
+      const length = dt.length;
+      const search = dt.search.value;
+      const orderColumn = dt.order[0].column;
+      const orderDir = dt.order[0].dir;
+
+      let query = `SELECT sales.transaction_id, SUM(sales.total_price) as total_price, transactions.purchase_date, accounts.firstname, accounts.lastname FROM sales INNER JOIN transactions ON transactions.id = sales.transaction_id INNER JOIN accounts ON accounts.id = transactions.customer_id WHERE transactions.status = ? AND customer_id = ?`;
+
+      const [recordsTotal] = await connection.execute(
+        `SELECT COUNT(*) as total FROM transactions INNER JOIN accounts ON transactions.customer_id = accounts.id WHERE status = ? AND customer_id = ?`,
+        [status, userID]
+      );
+
+      if (search) {
+        query += ` AND (transactions.id LIKE '%${search}%' OR accounts.firstname LIKE '%${search}%' OR accounts.lastname LIKE '%${search}%')`;
+      }
+
+      const [recordsFiltered] = await connection.execute(
+        `${query} GROUP BY sales.transaction_id`,
+        [status, userID]
+      );
+
+      const [data] = await connection.execute(
+        `${query} GROUP BY sales.transaction_id ORDER BY ${orderColumn} ${orderDir} LIMIT ${start}, ${length}`,
+        [status, userID]
       );
       return {
         draw: parseInt(draw),
@@ -109,7 +157,7 @@ class Transactions extends Database {
         [transactionID]
       );
 
-      const productsPromise = sales.map(async (sale) => {
+      const productPromise = sales.map(async (sale) => {
         try {
           const [product] = await connection.execute(
             `SELECT * FROM products WHERE id = ?`,
@@ -121,9 +169,11 @@ class Transactions extends Database {
         }
       });
 
-      const products = await Promise.all(productsPromise);
-      products.forEach((product) => {
-        productItems.push(product);
+      const productData = await Promise.all(productPromise);
+      productData.forEach((data, index) => {
+        data.price = parseInt(data.price);
+        data.quantity = sales[index].quantity; // Change the product quantity to product quantity of sales
+        productItems.push(data);
       });
 
       // Get Customer Info
@@ -142,6 +192,12 @@ class Transactions extends Database {
         second: "numeric",
       });
 
+      // Get The Grand Total
+      const grandTotal = productItems.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
+
       return {
         customer: customer[0],
         transaction: {
@@ -150,6 +206,7 @@ class Transactions extends Database {
           purchased_date: purchasedDate,
         },
         products: productItems,
+        grandTotal: grandTotal,
       };
     } catch (err) {
       return {

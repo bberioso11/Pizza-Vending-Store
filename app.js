@@ -10,6 +10,8 @@ const productRoutes = require("./routes/product");
 const mycartRoutes = require("./routes/mycart");
 const checkoutRoutes = require("./routes/checkout");
 const paymentsRoutes = require("./routes/payments");
+const invoiceRoutes = require("./routes/invoice");
+const transactionsRoutes = require("./routes/transactions");
 const app = express();
 
 app.listen(3000);
@@ -28,5 +30,7 @@ app.use("/", authRoutes);
 app.use("/", productRoutes);
 app.use("/", mycartRoutes);
 app.use("/", checkoutRoutes);
+app.use("/", invoiceRoutes);
+app.use("/", transactionsRoutes);
 app.use("/payments", paymentsRoutes);
 app.use("/admin", adminRoutes);
