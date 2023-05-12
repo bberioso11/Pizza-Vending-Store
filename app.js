@@ -3,6 +3,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const authMiddleware = require("./middlewares/authMiddleware");
 const userdataMiddleware = require("./middlewares/userdataMiddleware");
+const accountPermissionsMiddleware = require("./middlewares/accountPermissionsMiddleware");
 const authRoutes = require("./routes/auth");
 const indexRoutes = require("./routes/index");
 const adminRoutes = require("./routes/admin");
@@ -25,12 +26,15 @@ app.use(cookieParser());
 app.use(authMiddleware.verifyJWT);
 app.use(userdataMiddleware.userData);
 
+app.use("/admin", adminRoutes);
+app.use("/payments", paymentsRoutes);
+
 app.use("/", indexRoutes);
 app.use("/", authRoutes);
 app.use("/", productRoutes);
+
+app.use(accountPermissionsMiddleware.useridPermission);
 app.use("/", mycartRoutes);
 app.use("/", checkoutRoutes);
 app.use("/", invoiceRoutes);
 app.use("/", transactionsRoutes);
-app.use("/payments", paymentsRoutes);
-app.use("/admin", adminRoutes);

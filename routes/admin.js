@@ -4,12 +4,12 @@ const adminCtrl = require("../controller/admin");
 const productCtrl = require("../controller/products");
 const customersCtrl = require("../controller/customers");
 const transactionsCtrl = require("../controller/transactions");
-const accountPermissionMiddleware = require("../middlewares/accountPermissionsMiddleware");
+const accountPermissionsMiddleware = require("../middlewares/accountPermissionsMiddleware");
 
 const router = express.Router();
 const upload = multer();
 
-router.use(accountPermissionMiddleware.accountPermission);
+router.use(accountPermissionsMiddleware.positionPermission);
 
 // Invetory
 router.get("/api/inventory", productCtrl.productTable);
