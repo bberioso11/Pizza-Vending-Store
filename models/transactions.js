@@ -1,6 +1,11 @@
 const Database = require("../config/database");
 const Products = require("./products");
+const Auth = require("./auth");
+const { v4: uuidv4 } = require("uuid");
+const QRCode = require("qrcode");
+const path = require("path");
 const products = new Products();
+const auth = new Auth();
 
 class Transactions extends Database {
   async adminTransactionsTable(dt, status) {
@@ -203,6 +208,7 @@ class Transactions extends Database {
         transaction: {
           id: transactionID,
           uuidv4: transaction[0].uuidv4,
+          qrcode: transaction[0].qrcode,
           purchased_date: purchasedDate,
         },
         products: productItems,
@@ -222,13 +228,15 @@ class Transactions extends Database {
   async createTransaction(customerID) {
     const connection = await this.dbconnect();
     try {
+      const uuid = uuidv4();
+      const encryptUuid = auth.encrypt(uuid);
       // Get User Cart
       const userCarts = await products.myCart(customerID);
 
       // Insert Transaction
       const [transaction] = await connection.execute(
-        `INSERT INTO transactions (status, customer_id, uuidv4) VALUES ('pending', ?, '')`,
-        [customerID]
+        `INSERT INTO transactions (status, customer_id, uuidv4, qrcode) VALUES ('pending', ?, ?, ?)`,
+        [customerID, uuid, encryptUuid.encryptedData]
       );
 
       // Create Sales
@@ -244,6 +252,20 @@ class Transactions extends Database {
           ]
         );
       });
+
+      const qrData = {
+        transactionID: transaction.insertId,
+        uuid: uuid,
+        products: userCarts,
+      };
+
+      const qrPath = path.join(
+        __dirname,
+        "../public/qrcodes",
+        `${encryptUuid.encryptedData}.png`
+      );
+      QRCode.toFile(qrPath, JSON.stringify(qrData), { margin: 2, width: 200 });
+
       return {
         isSuccess: true,
         transactionID: transaction.insertId,

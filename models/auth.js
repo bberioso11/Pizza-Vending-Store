@@ -1,4 +1,5 @@
 const Database = require("../config/database");
+const crypto = require("crypto");
 
 class Auth extends Database {
   async login(form) {
@@ -61,6 +62,39 @@ class Auth extends Database {
     } finally {
       connection.end();
     }
+  }
+
+  encrypt(data, encryptionKey) {
+    if (!encryptionKey) {
+      encryptionKey = crypto.randomBytes(32);
+    }
+    const iv = crypto.randomBytes(16); // Generate a random initialization vector
+    const cipher = crypto.createCipheriv("aes-256-cbc", encryptionKey, iv);
+
+    let encryptedData = cipher.update(data, "utf8", "hex");
+    encryptedData += cipher.final("hex");
+
+    return {
+      iv: iv.toString("hex"),
+      encryptedData,
+    };
+  }
+
+  decrypt(encryptedData, encryptionKey) {
+    const decipher = crypto.createDecipheriv(
+      "aes-256-cbc",
+      encryptionKey,
+      Buffer.from(encryptedData.iv, "hex")
+    );
+
+    let decryptedData = decipher.update(
+      encryptedData.encryptedData,
+      "hex",
+      "utf8"
+    );
+    decryptedData += decipher.final("utf8");
+
+    return decryptedData;
   }
 }
 
