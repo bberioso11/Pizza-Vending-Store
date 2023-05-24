@@ -19,6 +19,14 @@ exports.transactionRender = (req, res) => {
   }
 };
 
+exports.userTransactionRender = (req, res) => {
+  const userPosition = res.locals.position;
+  if (userPosition !== "Administrator") {
+    res.sendStatus(401);
+  }
+  res.render("admin/user-transactions");
+};
+
 exports.transactionTable = async (req, res) => {
   const status = req.params.status;
   const userPosition = res.locals.position;
@@ -38,6 +46,20 @@ exports.transactionTable = async (req, res) => {
     );
     res.json(response);
   }
+};
+
+exports.userTransactionTable = async (req, res) => {
+  const userPosition = res.locals.position;
+  const userID = req.params.userid;
+  const datatables = req.query;
+  if (userPosition !== "Administrator") {
+    res.sendStatus(401);
+  }
+  const response = await transactions.adminUserTransactionsTable(
+    datatables,
+    userID
+  );
+  res.json(response);
 };
 
 exports.transactionDelete = async (req, res) => {

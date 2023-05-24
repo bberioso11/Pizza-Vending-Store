@@ -29,7 +29,15 @@ router.get(
   "/api/transactions-table/:status",
   transactionsCtrl.transactionTable
 );
+router.get(
+  "/api/user-transactions-table/:userid",
+  transactionsCtrl.userTransactionTable
+);
 router.delete("/api/transactions-delete", transactionsCtrl.transactionDelete);
 router.get("/transactions/:status", transactionsCtrl.transactionRender);
+router.get(
+  "/user-transactions/:userid",
+  transactionsCtrl.userTransactionRender
+);
 
 module.exports = router;

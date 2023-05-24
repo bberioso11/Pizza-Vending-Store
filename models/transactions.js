@@ -56,6 +56,54 @@ class Transactions extends Database {
     }
   }
 
+  async adminUserTransactionsTable(dt, userID) {
+    const connection = await this.dbconnect();
+    try {
+      const draw = dt.draw;
+      const start = dt.start;
+      const length = dt.length;
+      const search = dt.search.value;
+      const orderColumn = dt.order[0].column;
+      const orderDir = dt.order[0].dir;
+
+      let query = `SELECT sales.transaction_id, SUM(sales.total_price) as total_price, transactions.purchase_date, transactions.status FROM sales INNER JOIN transactions ON transactions.id = sales.transaction_id INNER JOIN accounts ON accounts.id = transactions.customer_id WHERE accounts.id = ?`;
+
+      const [recordsTotal] = await connection.execute(
+        `SELECT COUNT(*) as total FROM transactions INNER JOIN accounts ON transactions.customer_id = accounts.id WHERE accounts.id = ?`,
+        [userID]
+      );
+
+      if (search) {
+        query += ` AND (transactions.id LIKE '%${search}%' )`;
+      }
+
+      const [recordsFiltered] = await connection.execute(
+        `${query} GROUP BY sales.transaction_id`,
+        [userID]
+      );
+
+      const [data] = await connection.execute(
+        `${query} GROUP BY sales.transaction_id ORDER BY ${orderColumn} ${orderDir} LIMIT ${start}, ${length}`,
+        [userID]
+      );
+      return {
+        draw: parseInt(draw),
+        recordsTotal: recordsTotal[0].total,
+        recordsFiltered: recordsFiltered.length,
+        data: data,
+      };
+    } catch (err) {
+      console.log(err);
+      return {
+        isSuccess: false,
+        message: "Something wrong",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
   async customerTransactionsTable(dt, status, userID) {
     const connection = await this.dbconnect();
     try {
