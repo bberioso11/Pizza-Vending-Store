@@ -13,6 +13,7 @@ const checkoutRoutes = require("./routes/checkout");
 const paymentsRoutes = require("./routes/payments");
 const invoiceRoutes = require("./routes/invoice");
 const transactionsRoutes = require("./routes/transactions");
+const orderRoutes = require("./routes/order");
 const app = express();
 
 app.listen(3000);
@@ -32,6 +33,7 @@ app.use("/payments", paymentsRoutes);
 app.use("/", indexRoutes);
 app.use("/", authRoutes);
 app.use("/", productRoutes);
+app.use("/order", orderRoutes);
 
 app.use(accountPermissionsMiddleware.useridPermission);
 app.use("/", mycartRoutes);

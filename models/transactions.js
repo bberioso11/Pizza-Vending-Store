@@ -280,6 +280,43 @@ class Transactions extends Database {
       connection.end();
     }
   }
+
+  async findTransaction(uuid) {
+    const connection = await this.dbconnect();
+    try {
+      const [result] = await connection.execute(
+        `SELECT * FROM transactions WHERE uuidv4 = ?`,
+        [uuid]
+      );
+      if (result.length === 0) {
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.log(err);
+    } finally {
+      connection.end();
+    }
+  }
+
+  async transactionStatus(uuid) {
+    const connection = await this.dbconnect();
+    try {
+      const [result] = await connection.execute(
+        `SELECT * FROM transactions WHERE uuidv4 = ?`,
+        [uuid]
+      );
+      if (result[0].status === "pending") {
+        return "pending";
+      } else {
+        return "finished";
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      connection.end();
+    }
+  }
 }
 
 module.exports = Transactions;
