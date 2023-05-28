@@ -98,6 +98,78 @@ class Payments extends Products {
       };
     }
   }
+
+  async paymongoRetrieveCheckout(userID, id) {
+    try {
+      const { data } = await axios.get(
+        `https://api.paymongo.com/v1/checkout_sessions/${id}`,
+        {
+          headers: {
+            accept: "application/json",
+            authorization: "Basic c2tfdGVzdF9GOEFkNWliY2N1YU5VUEYxRU1FOHB6NXY6",
+          },
+        }
+      );
+      if (
+        data.data.attributes.payment_intent.attributes.status === "succeeded"
+      ) {
+        const userCarts = await this.myCart(userID);
+        const transaction = await transactions.createTransaction(userID);
+        const cartQuantityPromise = userCarts.map(async (cart) => {
+          return await this.updateQuantity(cart.product_id, cart.quantity);
+        });
+        await Promise.all(cartQuantityPromise);
+        await this.clearCart(userID);
+        return {
+          isSuccess: true,
+          message: "This transaction is paid",
+          transactionID: transaction.transactionID,
+        };
+      }
+      return data;
+    } catch (err) {
+      console.log("catch error: ", err);
+    }
+  }
+
+  async paymongoCreateCheckout(userID) {
+    const userCarts = await this.myCart(userID);
+    const lineItems = userCarts.map((cart) => ({
+      currency: "PHP",
+      amount: cart.product_price * 100,
+      name: cart.product_name,
+      quantity: cart.quantity,
+    }));
+    try {
+      const { data } = await axios.post(
+        "https://api.paymongo.com/v1/checkout_sessions",
+        {
+          data: {
+            attributes: {
+              line_items: lineItems,
+              payment_method_types: ["gcash", "paymaya"],
+              send_email_receipt: false,
+              show_description: true,
+              show_line_items: true,
+              description: "Pizza Vendo",
+              success_url:
+                "http://localhost:3000/payments/retrive-paymongo-checkout",
+            },
+          },
+        },
+        {
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            authorization: "Basic c2tfdGVzdF9GOEFkNWliY2N1YU5VUEYxRU1FOHB6NXY6",
+          },
+        }
+      );
+      return data;
+    } catch (err) {
+      console.log("catch error: ", err);
+    }
+  }
 }
 
 module.exports = Payments;

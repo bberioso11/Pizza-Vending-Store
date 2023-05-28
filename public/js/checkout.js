@@ -6,6 +6,7 @@ const Toast = Swal.mixin({
   timerProgressBar: true,
 });
 const paypalContainer = document.querySelector("#paypal-button-container");
+const paymentnowBtn = document.querySelector("#paynow-button-container");
 
 const selectPaymentRadio = () => {
   const radios = document.querySelectorAll("input[type='radio']");
@@ -13,8 +14,10 @@ const selectPaymentRadio = () => {
     radio.addEventListener("click", () => {
       if (radio.id === "paypal") {
         paypalContainer.style.display = "block";
+        paymentnowBtn.classList.add("d-none");
       } else {
         paypalContainer.style.display = "none";
+        paymentnowBtn.classList.remove("d-none");
       }
     });
   });
@@ -59,3 +62,19 @@ const paypalRender = async () => {
   paypalContainer.style.display = "none";
 };
 paypalRender();
+
+paymentnowBtn.addEventListener("click", async () => {
+  document
+    .querySelector("[role='spinner']")
+    .classList.remove("visually-hidden");
+  document.querySelector("#paynowbtn").classList.add("disabled");
+  try {
+    const api = await fetch("/payments/create-paymongo-checkout", {
+      method: "POST",
+    });
+    const response = await api.json();
+    window.location.replace(response);
+  } catch (err) {
+    console.log("catch error: ", err);
+  }
+});
