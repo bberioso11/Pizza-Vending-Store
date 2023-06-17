@@ -365,6 +365,34 @@ class Transactions extends Database {
       connection.end();
     }
   }
+
+  async transactionUpdate(uuid, status) {
+    const connection = await this.dbconnect();
+    try {
+      const findTransaction = await this.findTransaction(uuid);
+      if (!findTransaction) {
+        return {
+          isSuccess: false,
+          message: "Uuid cannot find.",
+        };
+      }
+      await connection.execute(
+        `UPDATE transactions SET status = ? WHERE uuidv4 = ? `,
+        [status, uuid]
+      );
+      console.log(response);
+      return {
+        isSuccess: true,
+      };
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
 }
 
 module.exports = Transactions;

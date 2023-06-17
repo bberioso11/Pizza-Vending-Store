@@ -6,9 +6,10 @@ const Toast = Swal.mixin({
   timerProgressBar: true,
 });
 
+const productStocks = document.querySelector(".stocks").innerText;
 $("input[name='quantity']").TouchSpin({
   min: 1,
-  max: 99,
+  max: productStocks,
   step: 1,
   // decimals: 2,
   boostat: 5,

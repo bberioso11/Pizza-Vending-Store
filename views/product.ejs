@@ -99,46 +99,52 @@
                                                         <span class="">₱<%= product.price %></span>
                                                         
                                                     </div>
+
+                                                    <div class="mt-2">
+                                                        <h6 class="fw-normal">Stocks: <span class="stocks"><%= product.quantity %></span></h6>
+                                                    </div>
                                                     
                                                 </div>
                                                 
-                                            </div>                                            
-
-                                            <hr class="mb-4">
+                                            </div>        
+                                            
+                                            <% if(product.quantity != 0){%>
+                                                <hr class="mb-4">
     
-                                            <div class="row quantity-selector mb-4">
-                                                <div class="col-xl-6 col-lg-6 col-sm-6 mt-sm-3">Quantity</div>
-                                                <div class="col-xl-6 col-lg-6 col-sm-6">
-                                                    <input id="quantity" type="text" value="1" name="quantity">
+                                                <div class="row quantity-selector mb-4">
+                                                    <div class="col-xl-6 col-lg-6 col-sm-6 mt-sm-3">Quantity</div>
+                                                    <div class="col-xl-6 col-lg-6 col-sm-6">
+                                                        <input id="quantity" type="text" value="1" name="quantity">
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <hr class="mb-5 mt-4">
-    
-                                            <div class="action-button text-center">
+                                                <hr class="mb-5 mt-4">
+        
+                                                <div class="action-button text-center">
 
-                                                <div class="row">
+                                                    <div class="row">
 
-                                                    <div class="col-xxl-7 col-xl-7 col-sm-6 mb-sm-0 mb-3">
+                                                        <div class="col-xxl-7 col-xl-7 col-sm-6 mb-sm-0 mb-3">
+                                                            
+                                                            <% if(!userID){%>
+                                                                <a class="btn btn-primary w-100 btn-lg" href="/login"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <span class="btn-text-inner">Add To Cart</span></a>
+                                                            <% }else{%>
+                                                                <button class="btn btn-primary w-100 btn-lg" id="addtocart"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <span class="btn-text-inner">Add To Cart</span></button>
+                                                            <%} %>
+                                                        </div>
+
+                                                        <div class="col-xxl-5 col-xl-5 col-sm-6">
+                                                            <% if(!userID){%>
+                                                            <a href="/login" class="btn btn-success w-100 btn-lg" id="buynow">Buy Now</a>
+                                                            <% }else{%>
+                                                            <a href="/checkout" class="btn btn-success w-100 btn-lg" id="buynow">Buy Now</a>
+                                                            <% } %>
+                                                        </div>
                                                         
-                                                        <% if(!userID){%>
-                                                            <a class="btn btn-primary w-100 btn-lg" href="/login"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <span class="btn-text-inner">Add To Cart</span></a>
-                                                        <% }else{%>
-                                                            <button class="btn btn-primary w-100 btn-lg" id="addtocart"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> <span class="btn-text-inner">Add To Cart</span></button>
-                                                        <%} %>
-                                                    </div>
-
-                                                    <div class="col-xxl-5 col-xl-5 col-sm-6">
-                                                        <% if(!userID){%>
-                                                        <a href="/login" class="btn btn-success w-100 btn-lg" id="buynow">Buy Now</a>
-                                                        <% }else{%>
-                                                        <a href="/checkout" class="btn btn-success w-100 btn-lg" id="buynow">Buy Now</a>
-                                                        <% } %>
                                                     </div>
                                                     
                                                 </div>
-                                                
-                                            </div>
+                                            <% }%>
 
                                             <div class="secure-info mt-4">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>

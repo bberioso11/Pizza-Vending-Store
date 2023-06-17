@@ -164,10 +164,20 @@ class Products extends Database {
     const connection = await this.dbconnect();
     try {
       const [myCart] = await connection.execute(
-        `SELECT cart.quantity, products.id AS product_id, products.name AS product_name, products.image AS product_img, products.price AS product_price FROM cart INNER JOIN products ON cart.product_id = products.id WHERE customer_id = ?`,
+        `SELECT cart.quantity, products.id AS product_id, products.name AS product_name, products.image AS product_img, products.price AS product_price, products.quantity AS product_quantity FROM cart INNER JOIN products ON cart.product_id = products.id WHERE customer_id = ?`,
         [userID]
       );
-      return myCart;
+
+      const filteredCart = [];
+
+      for await (const cart of myCart) {
+        const productQuantity = await this.checkQuantity(cart.product_id);
+        if (productQuantity >= cart.quantity) {
+          filteredCart.push(cart);
+        }
+      }
+
+      return filteredCart;
     } catch (err) {
       return {
         isSuccess: false,
@@ -216,6 +226,24 @@ class Products extends Database {
         isSuccess: false,
         message: "Something Wrong.",
         error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
+  async checkQuantity(productID) {
+    const connection = await this.dbconnect();
+    try {
+      const [product] = await connection.execute(
+        `SELECT quantity FROM products WHERE id = ?`,
+        [productID]
+      );
+      return product[0].quantity;
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: err,
       };
     } finally {
       connection.end();

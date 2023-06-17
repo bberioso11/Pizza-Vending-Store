@@ -7,5 +7,6 @@ router.use(cors());
 
 router.get("/validate/:uuid", orderCtrl.orderValidate);
 router.get("/capture/:uuid", orderCtrl.orderCapture);
+router.post("/finish", orderCtrl.orderFinish);
 
 module.exports = router;

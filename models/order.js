@@ -24,22 +24,30 @@ class Order extends Database {
   }
 
   async orderCapture(uuid) {
+    const connection = await this.dbconnect();
     try {
-      const validateOrder = await this.orderValidate(uuid);
-      if (!validateOrder.isSuccess) {
-        return validateOrder;
-      }
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({
-            isSuccess: true,
-            message:
-              "Your order is now ready. Please claim your order at the claiming area.",
-          });
-        }, 10000);
-      });
+      const [transaction] = await connection.execute(
+        `SELECT id FROM transactions WHERE uuidv4 = ?`,
+        [uuid]
+      );
+      const invoice = await transactions.invoice(transaction[0].id);
+      return invoice.products;
     } catch (err) {
       console.log(err);
+    } finally {
+      connection.end();
+    }
+  }
+
+  async orderFinish(uuid, status) {
+    try {
+      const response = await transactions.transactionUpdate(uuid, status);
+      return response;
+    } catch (error) {
+      return {
+        isSuccess: false,
+        message: error,
+      };
     }
   }
 }

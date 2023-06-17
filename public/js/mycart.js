@@ -39,6 +39,9 @@ const table = async () => {
             <input type="hidden" class="productID" value="${cart.product_id}">
         </td>
         <td class="fw-semibold">
+            <span class="stocks">${cart.product_quantity}</span>
+        </td>
+        <td class="fw-semibold">
             <input class="quantity" type="text" value="${cart.quantity}" name="quantity">
         </td>
         <td class="fw-semibold">₱${cart.product_price}</td>
