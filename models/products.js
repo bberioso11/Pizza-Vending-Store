@@ -168,6 +168,23 @@ class Products extends Database {
         [userID]
       );
 
+      return myCart;
+    } catch (err) {
+      return {
+        isSuccess: false,
+        message: "Something wrong",
+        error: err,
+      };
+    } finally {
+      connection.end();
+    }
+  }
+
+  async filteredCart(userID) {
+    const connection = await this.dbconnect();
+    try {
+      const myCart = await this.myCart(userID);
+
       const filteredCart = [];
 
       for await (const cart of myCart) {

@@ -25,6 +25,7 @@ exports.paypalCaptureOrder = async (req, res) => {
 exports.paymongoCreateCheckout = async (req, res) => {
   const userID = res.locals.userID;
   const paymongoID = req.cookies.paymongoID;
+  const hostname = req.hostname;
   if (!userID) {
     res.sendStatus(401);
   }
@@ -36,7 +37,7 @@ exports.paymongoCreateCheckout = async (req, res) => {
     const checkoutURL = response.data.attributes.checkout_url;
     res.json(checkoutURL);
   } else {
-    const response = await payments.paymongoCreateCheckout(userID);
+    const response = await payments.paymongoCreateCheckout(userID, hostname);
     const checkoutURL = response.data.attributes.checkout_url;
     res.cookie("paymongoID", response.data.id, { maxAge: 600000 });
     res.json(checkoutURL);

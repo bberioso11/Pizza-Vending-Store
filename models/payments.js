@@ -2,12 +2,19 @@ const Database = require("../config/database");
 const Products = require("./products");
 const Transactions = require("./transactions");
 const axios = require("axios");
+const https = require("https");
+
+const instance = axios.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false,
+  }),
+});
 
 const transactions = new Transactions();
 
 class Payments extends Products {
   async getTotalAmount(userID) {
-    const userCarts = await this.myCart(userID);
+    const userCarts = await this.filteredCart(userID);
     const totalAmount = userCarts.reduce(
       (total, cart) => total + cart.product_price * cart.quantity,
       0
@@ -20,17 +27,15 @@ class Payments extends Products {
     const auth = Buffer.from(
       process.env.PAYPAL_CLIENT_ID + ":" + process.env.PAYPAL_APP_SECRET
     ).toString("base64");
-    const response = await fetch(
-      `https://api-m.sandbox.paypal.com/v1/oauth2/token`,
+    const { data } = await instance.post(
+      "https://api-m.sandbox.paypal.com/v1/oauth2/token",
+      "grant_type=client_credentials",
       {
-        method: "POST",
-        body: "grant_type=client_credentials",
         headers: {
           Authorization: `Basic ${auth}`,
         },
       }
     );
-    const data = await response.json();
     return data.access_token;
   }
 
@@ -39,7 +44,7 @@ class Payments extends Products {
     const totalAmount = await this.getTotalAmount(userID);
     const accessToken = await this.paypalGenerateAccessToken();
     const url = `https://api-m.sandbox.paypal.com/v2/checkout/orders`;
-    const { data } = await axios.post(
+    const { data } = await instance.post(
       url,
       {
         intent: "CAPTURE",
@@ -65,11 +70,11 @@ class Payments extends Products {
   // use the orders api to capture payment for an order
   async paypalCapturePayment(userID, orderId) {
     const accessToken = await this.paypalGenerateAccessToken();
-    const userCarts = await this.myCart(userID);
+    const userCarts = await this.filteredCart(userID);
     const url = `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderId}/capture`;
 
     try {
-      const { data } = await axios.post(url, null, {
+      const { data } = await instance.post(url, null, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
@@ -77,10 +82,10 @@ class Payments extends Products {
       });
       if (data.status === "COMPLETED") {
         const transaction = await transactions.createTransaction(userID);
-        const cartQuantityPromise = userCarts.map(async (cart) => {
-          return await this.updateQuantity(cart.product_id, cart.quantity);
-        });
-        await Promise.all(cartQuantityPromise);
+        // const cartQuantityPromise = userCarts.map(async (cart) => {
+        //   return await this.updateQuantity(cart.product_id, cart.quantity);
+        // });
+        // await Promise.all(cartQuantityPromise);
         await this.clearCart(userID);
         return {
           isSuccess: true,
@@ -101,7 +106,7 @@ class Payments extends Products {
 
   async paymongoRetrieveCheckout(userID, id) {
     try {
-      const { data } = await axios.get(
+      const { data } = await instance.get(
         `https://api.paymongo.com/v1/checkout_sessions/${id}`,
         {
           headers: {
@@ -113,12 +118,12 @@ class Payments extends Products {
       if (
         data.data.attributes.payment_intent.attributes.status === "succeeded"
       ) {
-        const userCarts = await this.myCart(userID);
+        const userCarts = await this.filteredCart(userID);
         const transaction = await transactions.createTransaction(userID);
-        const cartQuantityPromise = userCarts.map(async (cart) => {
-          return await this.updateQuantity(cart.product_id, cart.quantity);
-        });
-        await Promise.all(cartQuantityPromise);
+        // const cartQuantityPromise = userCarts.map(async (cart) => {
+        //   return await this.updateQuantity(cart.product_id, cart.quantity);
+        // });
+        // await Promise.all(cartQuantityPromise);
         await this.clearCart(userID);
         return {
           isSuccess: true,
@@ -128,12 +133,16 @@ class Payments extends Products {
       }
       return data;
     } catch (err) {
-      console.log("catch error: ", err);
+      return {
+        isSuccess: false,
+        message: "Something Wrong.",
+        error: err.message,
+      };
     }
   }
 
-  async paymongoCreateCheckout(userID) {
-    const userCarts = await this.myCart(userID);
+  async paymongoCreateCheckout(userID, hostname) {
+    const userCarts = await this.filteredCart(userID);
     const lineItems = userCarts.map((cart) => ({
       currency: "PHP",
       amount: cart.product_price * 100,
@@ -141,7 +150,7 @@ class Payments extends Products {
       quantity: cart.quantity,
     }));
     try {
-      const { data } = await axios.post(
+      const { data } = await instance.post(
         "https://api.paymongo.com/v1/checkout_sessions",
         {
           data: {
@@ -152,8 +161,7 @@ class Payments extends Products {
               show_description: true,
               show_line_items: true,
               description: "Pizza Vendo",
-              success_url:
-                "http://localhost:3000/payments/retrive-paymongo-checkout",
+              success_url: `http://${hostname}:3000/payments/retrive-paymongo-checkout`,
             },
           },
         },
@@ -167,7 +175,11 @@ class Payments extends Products {
       );
       return data;
     } catch (err) {
-      console.log("catch error: ", err);
+      return {
+        isSuccess: false,
+        message: "Something Wrong.",
+        error: err.message,
+      };
     }
   }
 }

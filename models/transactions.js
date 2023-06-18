@@ -312,7 +312,11 @@ class Transactions extends Database {
         "../public/qrcodes",
         `${encryptUuid.encryptedData}.png`
       );
-      QRCode.toFile(qrPath, JSON.stringify(qrData), { margin: 2, width: 200 });
+      QRCode.toFile(qrPath, JSON.stringify(qrData), {
+        margin: 2,
+        width: 200,
+        errorCorrectionLevel: "L",
+      });
 
       return {
         isSuccess: true,
@@ -329,7 +333,7 @@ class Transactions extends Database {
     }
   }
 
-  async findTransaction(uuid) {
+  async transactionInfo(uuid) {
     const connection = await this.dbconnect();
     try {
       const [result] = await connection.execute(
@@ -339,26 +343,7 @@ class Transactions extends Database {
       if (result.length === 0) {
         return false;
       }
-      return true;
-    } catch (err) {
-      console.log(err);
-    } finally {
-      connection.end();
-    }
-  }
-
-  async transactionStatus(uuid) {
-    const connection = await this.dbconnect();
-    try {
-      const [result] = await connection.execute(
-        `SELECT * FROM transactions WHERE uuidv4 = ?`,
-        [uuid]
-      );
-      if (result[0].status === "pending") {
-        return "pending";
-      } else {
-        return "finished";
-      }
+      return result[0];
     } catch (err) {
       console.log(err);
     } finally {
@@ -369,8 +354,8 @@ class Transactions extends Database {
   async transactionUpdate(uuid, status) {
     const connection = await this.dbconnect();
     try {
-      const findTransaction = await this.findTransaction(uuid);
-      if (!findTransaction) {
+      const transaction = await this.transactionInfo(uuid);
+      if (!transaction) {
         return {
           isSuccess: false,
           message: "Uuid cannot find.",
@@ -380,7 +365,6 @@ class Transactions extends Database {
         `UPDATE transactions SET status = ? WHERE uuidv4 = ? `,
         [status, uuid]
       );
-      console.log(response);
       return {
         isSuccess: true,
       };
